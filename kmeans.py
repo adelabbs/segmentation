@@ -44,12 +44,12 @@ def kmeans(data, k):
 
     # We assume that the data matrix stores n-dimensional data items as its column vectors
     # However, it's easier to work with n-dimensional data items as rows
-    data = np.array(data.T, dtype=np.int32)
+    data = np.array(data.T, dtype=np.float32)
     labels = np.zeros(data.shape[0], dtype=np.uint8)
     # Randomly initialize cluster centers :
     # Here, we randomly select k data points to be the initial cluster centers
     idx = np.random.choice(data.shape[0], size=k, replace=False)
-    means = np.array(data[idx, :], dtype=np.int32)
+    means = np.array(data[idx, :], dtype=np.float32)
 
     converged = False
     PRECISION = 0.00001
@@ -59,10 +59,11 @@ def kmeans(data, k):
     while not converged:
         # Assign labels
         distances = computeDistanceMatrix(data, means)
-
         labels = np.argmin(distances, axis=1)
 
         # Recompute cluster centers
+        # If no data point is assigned to a given cluster (rare corner case)
+        # its center is reassigned to a random data point
         new_means = np.array([np.mean(data[labels == i], axis=0)
                               if np.count_nonzero(labels == i) > 0 else data[np.random.choice(data.shape[0])]
                               for i in range(k)])
@@ -158,7 +159,7 @@ def testKMeans():
 
 
 def main():
-    # testKMeans()
+    #testKMeans()
     DIR = "./data"
     OUT = "./out"
     if not os.path.exists(OUT):
