@@ -160,31 +160,35 @@ def testKMeans():
 def main():
     # testKMeans()
     DIR = "./data"
-    OUT = "./out"  # intermediate output images directory
+    OUT = "./out"
     if not os.path.exists(OUT):
         os.makedirs(OUT)
 
-    for filename in ["sunset.bmp", "terrain.bmp"]:
-        im = readImage(os.path.join(DIR, filename))
-        for k in [3, 5, 7, 10]:
-            # k-means LUV
-            print(f"luv k-means segmentation of {filename} with k={k}...")
-            seg = imSegment(im, k)
-            writeImage(seg, os.path.join(
-                OUT, filename+"_luv_kmeans_" + str(k) + ".bmp"))
+    directory = os.fsencode(DIR)
+    for file in os.listdir(directory):
+        filename = os.fsdecode(file)
+        if filename.endswith("bmp"):
+            im = readImage(os.path.join(DIR, filename))
+            for k in [3, 5, 7, 10]:
+                # k-means LUV
+                print(f"luv k-means segmentation of {filename} with k={k}...")
+                seg = imSegment(im, k)
+                writeImage(seg, os.path.join(
+                    OUT, filename+"_luv_kmeans_" + str(k) + ".bmp"))
 
-            # k-means RGB
-            print(f"rgb k-means segmentation of {filename} with k={k}...")
-            seg = imSegmentRGB(im, k)
-            writeImage(seg, os.path.join(
-                OUT, filename+"_rgb_kmeans_" + str(k) + ".bmp"))
+                # k-means RGB
+                print(f"rgb k-means segmentation of {filename} with k={k}...")
+                seg = imSegmentRGB(im, k)
+                writeImage(seg, os.path.join(
+                    OUT, filename+"_rgb_kmeans_" + str(k) + ".bmp"))
 
-        # k-means LUV + (x,y)
-        for k in [21, 35, 50]:
-            print(f"luv + xy k-means segmentation of {filename} with k={k}...")
-            seg = imSegmentWithPosition(im, k)
-            writeImage(seg, os.path.join(
-                OUT, filename+"_xy_luv_kmeans_" + str(k) + ".bmp"))
+            # k-means LUV + (x,y)
+            for k in [21, 35, 50]:
+                print(
+                    f"luv + xy k-means segmentation of {filename} with k={k}...")
+                seg = imSegmentWithPosition(im, k)
+                writeImage(seg, os.path.join(
+                    OUT, filename+"_xy_luv_kmeans_" + str(k) + ".bmp"))
 
     return None
 
